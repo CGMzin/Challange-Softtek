@@ -12,74 +12,38 @@
 </head>
 
 <body>
-    <div class="container">
+    <div class="container" style="max-width: 100%;margin: 0;padding: 0;">
         <div class="d-flex flex-column flex-shrink-0 menu" style="width: 4.5rem;">
             <a href="#" class="logoMenu"><img src="img/LogoSofttek2.png" id="logoMenu" alt="LogoSofttek"></a>
-            <div id="abreMenu">
+            <div id="abreMenu" class="padrao">
                 <span></span>
                 <span></span>
                 <span></span>
                 <span></span>
             </div>
             <div class="subMenu hide">
-                <ul class="nav nav-pills nav-flush flex-column mb-auto text-center">
-                    <li class="nav-item">
-                        <a href="#" class="nav-link active py-3 border-bottom rounded-0" aria-current="page"
-                            data-bs-toggle="tooltip" data-bs-placement="right" aria-label="Home"
-                            data-bs-original-title="Home">
-                            <svg class="bi pe-none" width="24" height="24" role="img" aria-label="Home">
-                                <use xlink:href="#home"></use>
-                            </svg>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="nav-link py-3 border-bottom rounded-0" data-bs-toggle="tooltip"
-                            data-bs-placement="right" aria-label="Dashboard" data-bs-original-title="Dashboard">
-                            <svg class="bi pe-none" width="24" height="24" role="img" aria-label="Dashboard">
-                                <use xlink:href="#speedometer2"></use>
-                            </svg>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="nav-link py-3 border-bottom rounded-0" data-bs-toggle="tooltip"
-                            data-bs-placement="right" aria-label="Orders" data-bs-original-title="Orders">
-                            <svg class="bi pe-none" width="24" height="24" role="img" aria-label="Orders">
-                                <use xlink:href="#table"></use>
-                            </svg>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="nav-link py-3 border-bottom rounded-0" data-bs-toggle="tooltip"
-                            data-bs-placement="right" aria-label="Products" data-bs-original-title="Products"
-                            aria-describedby="tooltip414023">
-                            <svg class="bi pe-none" width="24" height="24" role="img" aria-label="Products">
-                                <use xlink:href="#grid"></use>
-                            </svg>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="nav-link py-3 border-bottom rounded-0" data-bs-toggle="tooltip"
-                            data-bs-placement="right" aria-label="Customers" data-bs-original-title="Customers">
-                            <svg class="bi pe-none" width="24" height="24" role="img" aria-label="Customers">
-                                <use xlink:href="#people-circle"></use>
-                            </svg>
-                        </a>
-                    </li>
+                <ul>
+                    <li><img src="img/botao-adicionar.png" alt="Icon1"><span>Novo Chat</span></li>
+                    <li><img src="img/circulo-de-flecha.png" alt="Icon1"><span>Chats Recentes</span></li>
+                    <li><span>FAQ Softtek</span></li>
                 </ul>
             </div>
 
             <a href="#" class="perfil"><img src="img/Edu.png" alt="ImagemUsuario"></a>
+            <div class="infoUs hide">
+                <span>Risada</span>
+            </div>
         </div>
         <main class="chat-container">
 
             <div class="chat-content">
-                <div class="chat-message from-operator">
+                <div class="chat-message from-system">
                     <p>Novo atendimento. Protocolo nº 007. Nível 2. Setor: Suporte técnico especializado.</p>
                 </div>
                 <div class="chat-message from-system">
                     <p>Registro salvo no banco de dados com sucesso!</p>
                 </div>
-                <div class="chat-message from-operator">
+                <div class="chat-message from-system">
                     <p>Por favor, descreva em detalhes a demanda.</p>
                 </div>
                 <div class="chat-message from-user">
@@ -94,7 +58,7 @@
                     </ol>
                     </p>
                 </div>
-                <div class="chat-message from-operator">
+                <div class="chat-message from-system">
                     <p>Alguma dessas soluções mostrou-se útil?</p>
                 </div>
                 <div class="chat-response">
@@ -107,8 +71,8 @@
             </div>
 
             <footer class="chat-input">
-                <input type="text" placeholder="Digite novas mensagens aqui...">
-                <button>Enviar</button>
+                <input type="text" placeholder="Digite novas mensagens aqui..." id="inputTxt">
+                <button id="btnEnviar">Enviar</button>
             </footer>
         </main>
     </div>

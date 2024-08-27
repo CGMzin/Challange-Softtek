@@ -1,3 +1,4 @@
+
 body {
     margin: 0;
     font-family: Arial, sans-serif;
@@ -38,19 +39,85 @@ body {
 
 .open2{
     position: absolute !important;
-    margin-left: 16.5rem !important;
+    transition: .5s ease-in-out !important;
+    transform: translateX(16.5rem) !important;
+}
+
+.padrao{
+    transition: none !important;
 }
 
 .perfil{
     position: fixed !important;
-    transform: translate(15%,0);
+    transform: translateX(15%);
+    transition: 1000ms all cubic-bezier(0.19, 1, 0.22, 1);
     bottom: 0.5rem;
+    z-index: 10;
+}
+
+.perfil.open{
+    position: fixed !important;
+    transform: translateX(2.5rem);
+}
+
+.subMenu li{
+    border: 1px solid white;
+    border-radius: 10px;
+    width: 90% !important;
+    height: 4rem;
+    margin: auto;
+    margin-top: 1rem;
+    padding: 1rem 0;
+    list-style-type: none;
+}
+
+.subMenu ul{
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.subMenu img{
+    width: 1.5rem;
+    margin-top: 0.5;
+    margin-left: 1rem;
+}
+
+
+.subMenu span{
+    margin-right: 2rem;
+    color: white;
+    font-size: 1.4rem;
+    line-height: 1.5rem;
+    float: right;
 }
 
 .perfil img{
     width: 3.5rem !important;
-    border-radius: 20%;
+    border-radius: 8px;
     border: solid 1px white;
+}
+
+.infoUs {
+    background-color: white;
+    height: 3.7rem;
+    width: 15rem;
+    position: fixed;
+    bottom: 0.4rem;
+    transform: translateX(2.4rem);
+    border-radius: 8px;
+}
+
+.infoUs span{
+    display: block;
+    margin-left: 5rem;
+    margin-top: 1rem;
+    width: 9rem;
+    height: 3rem;
+    text-align: center;
+    justify-items: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .chat-container {
@@ -71,28 +138,27 @@ body {
     flex: 1;
     padding: 20px;
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
 }
 
 .chat-message {
     margin: 10px 0;
-    padding: 10px;
-    border-radius: 5px;
+    padding: 10px;    
     max-width: 60%;
-}
-
-.from-operator {
-    background-color: #d1d8e0;
-    align-self: flex-start;
+    background-color: white;
+    border: solid 1px #e0e0e0;
+    border-radius: 10px;
 }
 
 .from-system {
-    background-color: #f4f4f4;
+    border-left: 6px solid #020311 !important;
     align-self: flex-start;
-    font-style: italic;
+    color: #878787;
 }
 
 .from-user {
-    background-color: #c8d6e5;
+    border-right: 6px solid #1c2fda !important;
     align-self: flex-end;
 }
 
@@ -154,7 +220,6 @@ body {
     -webkit-transition: .5s ease-in-out;
     -moz-transition: .5s ease-in-out;
     -o-transition: .5s ease-in-out;
-    transition: .5s ease-in-out;
     cursor: pointer;
   }
   
