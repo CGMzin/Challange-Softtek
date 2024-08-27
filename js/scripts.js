@@ -3,10 +3,12 @@ $(document).ready(function () {
         $(this).toggleClass('open');
         $(".menu").toggleClass('expanded');
         $(".subMenu").toggleClass('hide');
+        $(".subMenu").toggleClass('fade-in-element');
         $("#logoMenu").toggleClass('img2');
         $("#abreMenu").toggleClass('padrao');
         $("#abreMenu").toggleClass('open2');
         $(".infoUs").toggleClass('hide');
+        $(".infoUs").toggleClass('fade-in-element');
         $(".perfil").toggleClass('open');
         if (document.getElementById("logoMenu").classList.contains("img2")) {
             document.getElementById("logoMenu").src = "img/LogoSofttek.png";
