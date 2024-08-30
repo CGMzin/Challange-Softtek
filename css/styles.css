@@ -219,12 +219,16 @@ body {
 }
 
 .chat-input {
-    position: absolute;
+    position: fixed;
     bottom: 0;
     padding: 10px;
     background-color: #f4f4f4;
     display: flex;
     border-top: 1px solid #ddd;
+}
+
+main{
+    margin-bottom: 3rem;
 }
 
 .chat-input input {
