@@ -344,7 +344,6 @@ main{
 @media (max-width: 768px) {
     .menu.expanded {
         width: 100% !important;
-        position: absolute;
         height: 100%;
     }
 
