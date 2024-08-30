@@ -340,10 +340,20 @@ body {
     .menu.expanded {
         width: 100% !important;
     }
+
+    .subMenu {
+        transition: 1000ms all cubic-bezier(0.19, 1, 0.22, 1);
+        width: 80%;
+    }
 }
 
 @media (max-width: 480px) {
     .menu.expanded {
         width: 100% !important;
+    }
+
+    .subMenu {
+        width: 70%;
+        transition: 1000ms all cubic-bezier(0.19, 1, 0.22, 1);
     }
 }
