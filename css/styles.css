@@ -346,6 +346,12 @@ body {
         width: 100%;
         max-width: 100vw;
     }
+
+    .open2 {
+        position: absolute !important;
+        transition: 0.5s ease-in-out !important;
+        transform: translateX(21rem) !important;
+    }
 }
 
 @media (max-width: 480px) {
