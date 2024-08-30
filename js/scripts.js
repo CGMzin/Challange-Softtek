@@ -11,17 +11,29 @@ $(document).ready(function () {
         $(".infoUs").toggleClass('fade-in-element');
         $(".perfil").toggleClass('open');
 
-        try{
-            $(".chat-container").toggleClass('open');            
-            $("body").toggleClass('fecha');            
-        }
-        catch{}
+        try {
+            $(".chat-container").toggleClass('open');
+            $("body").toggleClass('fecha');
+        } catch {}
 
         if (document.getElementById("logoMenu").classList.contains("img2")) {
             document.getElementById("logoMenu").src = "img/LogoSofttek.png";
-        }
-        else
+        } else {
             document.getElementById("logoMenu").src = "img/LogoSofttek2.png";
-    });   
+        }
+
+        // Ensure chat input is visible when menu is closed
+        if (!$(".menu").hasClass('expanded')) {
+            $(".chat-input").css({
+                'position': 'absolute',
+                'bottom': '0',
+                'padding-bottom': '0px',
+                'background-color': '#f4f4f4',
+                'border-top': '1px solid #ddd',
+                'width': '100%',
+                'z-index': '10'
+            });
+        }
+    });
 });
 
