@@ -18,6 +18,7 @@ body {
 .menu {
     background-color: #02040f !important;
     transition: 1000ms all cubic-bezier(0.19, 1, 0.22, 1);
+    width: 4.5rem;
 }
 
 .menu.expanded {
@@ -333,4 +334,16 @@ body {
 
 .hide{
     opacity: 0;
+}
+
+@media (max-width: 768px) {
+    .menu.expanded {
+        width: 100% !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .menu.expanded {
+        width: 100% !important;
+    }
 }
