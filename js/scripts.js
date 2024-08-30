@@ -12,7 +12,7 @@ $(document).ready(function () {
         $(".perfil").toggleClass('open');
 
         try{
-            $(".chat-input").toggleClass('open');            
+            $(".chat-container").toggleClass('open');            
             $("body").toggleClass('fecha');            
         }
         catch{}

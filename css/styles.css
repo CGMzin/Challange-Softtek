@@ -48,7 +48,7 @@ body {
 }
 
 .perfil {
-    position: fixed !important;
+    position: absolute !important;
     transform: translateX(15%);
     transition: 1000ms all cubic-bezier(0.19, 1, 0.22, 1);
     bottom: 0.5rem;
@@ -56,7 +56,6 @@ body {
 }
 
 .perfil.open {
-    position: fixed !important;
     transform: translateX(2.5rem);
 }
 
@@ -100,7 +99,7 @@ body {
     background-color: white;
     height: 3.7rem;
     width: 15rem;
-    position: fixed;
+    position: absolute;
     bottom: 0.4rem;
     transform: translateX(2.4rem);
     border-radius: 8px;
@@ -355,18 +354,18 @@ main{
         max-width: 100vw;
     }
 
-    .chat-input.open{
+    .chat-container.open{
         display: none;
-    }
-
-    .body.fecha{
-        height: 2rem;
     }
 
     .open2 {
         position: absolute !important;
         transition: 0.5s ease-in-out !important;
         transform: translateX(21rem) !important;
+    }
+
+    .infoUs{
+        width: 80%;
     }
 }
 
