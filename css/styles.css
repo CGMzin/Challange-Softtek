@@ -130,6 +130,7 @@ html, body {
     display: flex;
     flex-direction: column;
     background-color: #fff;
+    margin: 0;
 }
 
 .chat-header {
