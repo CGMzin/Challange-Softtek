@@ -10,6 +10,12 @@ $(document).ready(function () {
         $(".infoUs").toggleClass('hide');
         $(".infoUs").toggleClass('fade-in-element');
         $(".perfil").toggleClass('open');
+
+        try{
+            $(".chat-input").toggleClass('open');            
+        }
+        catch{}
+
         if (document.getElementById("logoMenu").classList.contains("img2")) {
             document.getElementById("logoMenu").src = "img/LogoSofttek.png";
         }
