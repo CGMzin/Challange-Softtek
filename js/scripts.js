@@ -13,6 +13,7 @@ $(document).ready(function () {
 
         try{
             $(".chat-input").toggleClass('open');            
+            $("body").toggleClass('fecha');            
         }
         catch{}
 

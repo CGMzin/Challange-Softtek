@@ -359,6 +359,10 @@ main{
         display: none;
     }
 
+    .body.fecha{
+        height: 2rem;
+    }
+
     .open2 {
         position: absolute !important;
         transition: 0.5s ease-in-out !important;
