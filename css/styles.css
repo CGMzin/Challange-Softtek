@@ -164,6 +164,25 @@ body {
     color: #8d8d8d;
 }
 
+.faq, .corpoCollapse {
+    margin: auto;
+    padding: 10px;
+    width: 70%;
+    background-color: #ffffff;
+    border: solid 1px #c2c2c2;
+    border-radius: 10px;
+}
+
+.faq p, .corpoCollapse p{
+    text-align: center;
+    margin: 0.5rem 0;
+}
+
+.corpoCollapse {
+    background-color: #e5e5e5 !important;
+}
+
+
 .chat-message {
     margin: 10px 0;
     padding: 10px;
