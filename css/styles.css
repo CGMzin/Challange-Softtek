@@ -219,6 +219,8 @@ body {
 }
 
 .chat-input {
+    position: absolute;
+    bottom: 0;
     padding: 10px;
     background-color: #f4f4f4;
     display: flex;
