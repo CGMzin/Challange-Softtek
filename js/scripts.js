@@ -27,7 +27,8 @@ $(document).ready(function () {
             $(".chat-input").css({
                 'position': 'absolute',
                 'bottom': '0',
-                'padding-bottom': '0px',
+                'padding': '10px',
+                'display': 'flex',
                 'background-color': '#f4f4f4',
                 'border-top': '1px solid #ddd',
                 'width': '100%',

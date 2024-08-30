@@ -146,6 +146,7 @@ html, body {
     overflow-y: auto;
     display: flex;
     flex-direction: column;
+    padding-bottom: 4rem;
 }
 
 .chat-history{
@@ -371,6 +372,16 @@ main{
         position: fixed;
         bottom: 0;
         width: calc(100% - 4.5rem); /* Adjust width to account for the menu */
+    }
+
+    .infoUs{
+        width: 80%;
+    }
+
+    .open2 {
+        position: absolute !important;
+        transition: 0.5s ease-in-out !important;
+        transform: translateX(21rem) !important;
     }
 }
 
