@@ -1,7 +1,10 @@
 const express = require('express');
+const { OpenAI } = require("@langchain/openai");
+const path = require('path');
+
+
 const app = express();
 const PORT = process.env.PORT || 3000;
-const path = require('path');
 
 // Middleware to parse JSON bodies
 app.use(express.json());
@@ -32,6 +35,8 @@ app.get('/historico', (req, res) => {
 app.get('/teste', (req, res) => {
   res.setHeader('Content-Type', 'text/html');
   res.sendFile(path.join(__dirname, 'public', 'teste.html'));
+
+
 });
 
 
