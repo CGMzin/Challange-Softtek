@@ -29,6 +29,10 @@ app.get('/historico', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'historico.html'));
 });
 
+app.get('/teste', (req, res) => {
+  res.setHeader('Content-Type', 'text/html');
+  res.sendFile(path.join(__dirname, 'public', 'teste.html'));
+});
 
 
 
