@@ -1,16 +1,25 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "main": "index.js",
+  "type": "module",
   "license": "MIT",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "generate:migrations": "drizzle-kit generate",
+    "run:migrations": "node ./src/db/migrate.js",
+    "studio": "drizzle-kit studio"
   },
   "dependencies": {
     "@langchain/community": "^0.2.32",
+    "better-sqlite3": "^11.2.1",
+    "drizzle-orm": "^0.33.0",
     "express": "4.19.2",
     "langchain": "0.2.18",
     "node-llama-cpp": "2.8.16"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.11",
+    "drizzle-kit": "^0.24.2"
   }
 }
