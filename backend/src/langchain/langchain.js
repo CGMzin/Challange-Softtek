@@ -1,6 +1,4 @@
-import { LlamaCppEmbeddings } from "@langchain/community/embeddings/llama_cpp";
-import { HumanMessage, AIMessage } from "@langchain/core/messages";
-import { createStuffDocumentsChain } from "langchain/chains/combine_documents";
+import { HumanMessage } from "@langchain/core/messages";
 import {
   ChatPromptTemplate,
   MessagesPlaceholder,
@@ -9,66 +7,79 @@ import {
   RunnablePassthrough,
   RunnableSequence,
 } from "@langchain/core/runnables";
+import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
+import { createStuffDocumentsChain } from "langchain/chains/combine_documents";
+import { MemoryVectorStore } from "langchain/vectorstores/memory";
+import { data } from './data.js';
 
-// Definir onde está o Llama
-const getLlamaPath = () => "./src/langchain/llama/consolidated.00.pth";
+const createLLM = () => new ChatOpenAI({
+  model: "gpt-4o-mini",
+  temperature: 1
+});
 
-// Criar o model embedding
-const createEmbeddings = (modelPath) => new LlamaCppEmbeddings({ modelPath });
+// Create the embedding model
+const embeddings = new OpenAIEmbeddings();
 
-// Criando template padrão para resposta
-const getSystemTemplate = () => `Responda às perguntas do usuário com base no contexto abaixo. 
-Se o contexto não contiver informações relevantes para a pergunta, não invente nada e apenas diga "Eu não sei":
+// Create the standard response template
+// const getSystemTemplate = () => `Responda às perguntas do usuário com base no contexto abaixo. 
+// Se o contexto não contiver informações relevantes para a pergunta, não invente nada e apenas diga "Eu não sei":
+
+// <context>
+// {context}
+// </context>
+// `;
+
+const getSystemTemplate = () => `Responda às perguntas do usuário com base em conhecimentos de TI em geral.
 
 <context>
 {context}
 </context>
 `;
 
-// Definindo template padrão para resposta
+// Define the standard response template
 const createQuestionAnsweringPrompt = () => ChatPromptTemplate.fromMessages([
   ["system", getSystemTemplate()],
   new MessagesPlaceholder("messages"),
 ]);
 
-// Criando documentChain para responder com base em textos("documentos") anteriores utilizando o model 
-const createDocumentChain = async (embeddings, prompt) => await createStuffDocumentsChain({
-  embeddings,
+// Create document chain to respond based on previous texts ("documents") using the model 
+const createDocumentChain = async (llm, prompt) => createStuffDocumentsChain({
+  llm,
   prompt,
 });
 
-// Criando o retrievalChain para que ele crie o histórico de conversas conforme for usando
+// Create the retrieval chain to maintain conversation history
 const parseRetrieverInput = (params) => params.messages[params.messages.length - 1].content;
 
-const createRetrievalChain = (documentChain) => RunnablePassthrough.assign({
+const createVectorStore = async () => {
+  const vectorStore = await MemoryVectorStore.fromTexts(
+    [data[0], data[1], data[2]],
+    [{ id: 2 }, { id: 1 }, { id: 3 }],
+    embeddings
+  );
+  return vectorStore.asRetriever();
+};
+
+const createRetrievalChain = (documentChain, retriever) => RunnablePassthrough.assign({
   context: RunnableSequence.from([parseRetrieverInput, retriever]),
 }).assign({
   answer: documentChain,
 });
 
-// Função principal para executar o fluxo
-const main = async () => {
-  const llamaPath = getLlamaPath();
-  const embeddings = createEmbeddings(llamaPath);
+// Main function to execute the flow
+const main = async (inputMessage) => {
+  const llm = createLLM();
   const questionAnsweringPrompt = createQuestionAnsweringPrompt();
-  const documentChain = await createDocumentChain(embeddings, questionAnsweringPrompt);
-  const retrievalChain = createRetrievalChain(documentChain);
+  const documentChain = await createDocumentChain(llm, questionAnsweringPrompt);
+  const retriever = await createVectorStore();
+  const retrievalChain = createRetrievalChain(documentChain, retriever);
 
-  // Pergunta teste
-  await retrievalChain.invoke({
-    messages: [new HumanMessage("Can LangSmith help test my LLM applications?")],
+  // Test question
+  const response = await retrievalChain.invoke({
+    messages: [new HumanMessage(inputMessage)],
   });
-  const res = embeddings.embedQuery("Hello Llama!");
 
-  console.log(res);
+  return response.answer;
 };
 
-
 export { main };
-
-// const documents = ["Hello World!", "Bye Bye!"];
-
-
-// const res2 = await embeddings.embedDocuments(documents);
-
-// console.log(res2) 

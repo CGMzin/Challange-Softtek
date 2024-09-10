@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "b447d85e-b0e6-41ae-a9fa-f40d92896ccb",
+  "id": "83e3d6d2-e4c4-495e-b8dd-85476a7c850e",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "messages": {
@@ -17,6 +17,13 @@
         "content": {
           "name": "content",
           "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "sessionId": {
+          "name": "sessionId",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false

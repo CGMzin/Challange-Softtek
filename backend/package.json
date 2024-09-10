@@ -6,17 +6,21 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "generate:migrations": "drizzle-kit generate",
-    "run:migrations": "node ./src/db/migrate.js",
+    "generate": "drizzle-kit generate",
+    "push": "drizzle-kit push",
+    "migrate": "node ./src/db/migrate.js",
     "studio": "drizzle-kit studio"
   },
   "dependencies": {
     "@langchain/community": "^0.2.32",
+    "@langchain/openai": "^0.2.10",
     "better-sqlite3": "^11.2.1",
+    "cheerio": "^1.0.0",
     "drizzle-orm": "^0.33.0",
     "express": "4.19.2",
     "langchain": "0.2.18",
-    "node-llama-cpp": "2.8.16"
+    "node-llama-cpp": "2.8.16",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.11",

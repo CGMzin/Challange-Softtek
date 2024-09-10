@@ -1,9 +1,10 @@
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
-// import { insertMessage, getAllMessages } from './src/db/db.js';
 // import { messages } from './src/db/schema.js';
 import { main } from './src/langchain/langchain.js';
+import { insertMessage } from './src/db/db.js';
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -44,13 +45,14 @@ app.get('/teste', (req, res) => {
 });
 
 // Example route to interact with the database
-app.get('/messages', async (req, res) => {
+app.post('/messages', async (req, res) => {
   try {
-    // const rows = await getAllMessages();
-    // const lastMessage = rows[rows.length - 1]; // Get the last message
-    // res.json(lastMessage.content);
-    main()
-
+    main(req.body.content).then((response) => {
+      // insertMessage(req.body.content, 1, 'user', Date.now());
+      // insertMessage(response, 1, 'system', Date.now());
+      console.log({ response })
+      res.json({ text: response });
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
