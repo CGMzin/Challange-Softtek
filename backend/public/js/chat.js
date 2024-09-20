@@ -79,3 +79,30 @@ function mudaTexto() {
     document.querySelectorAll(".from-system")[document.querySelectorAll(".from-system").length - 1]
         .scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
+
+$(document).ready(function () {
+    const response = fetch('/messages', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    const data = response.then(res => res.json()).then(data => {
+        const chatContent = document.querySelector(".chat-content");
+        if(data.length == 0) {
+            const msgNode = '<div class="chat-message from-system">' +
+                "<p>Olá, sou o assistente virtual da SoftTek, como posso te ajudar?</p>" +
+                '</div>';
+            chatContent.innerHTML += msgNode;
+        }
+        data.forEach(msg => {
+            const msgNode = '<div class="chat-message from-' + msg.senderType + '">' +
+                "<p>" + msg.content + "</p>" +
+                '</div>';
+            chatContent.innerHTML += msgNode;
+        });
+        chatContent.scrollTo(0, chatContent.scrollHeight);
+    }).catch(err => {
+        console.error(err);
+    });
+});
