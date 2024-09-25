@@ -20,7 +20,6 @@ $(document).ready(function () {
             `;
             chatContent.innerHTML += msgNode;
         });
-        chatContent.scrollTo(0, chatContent.scrollHeight);
 
         document.querySelectorAll(".old-chat").forEach(chat => {
             chat.addEventListener("click", (e) => {
