@@ -48,14 +48,23 @@ function mudaTexto() {
             });
             const data = response.then(res => res.json()).then(data => {
                 console.log(data)
-                novoTexto = data.text; // Assuming the response contains a 'text' field
+                novoTexto = data.text;
                 let i = 0;
 
-                msg.textContent = ""; // Limpa o conteúdo para começar a digitação
+                msg.innerHTML = ""; 
 
                 function digitarLetraPorLetra() {
+                    if(novoTexto.charAt(i) == "<"){
+                        while(novoTexto.charAt(i) != ">"){
+                            i++;
+                        }
+                        msg.innerHTML = novoTexto.substring(0, i+1);
+                        i++;
+                        setTimeout(digitarLetraPorLetra, 20); 
+                        return;
+                    }
                     if (i < novoTexto.length) {
-                        msg.textContent += novoTexto.charAt(i);
+                        msg.innerHTML += novoTexto.charAt(i);
                         i++;
                         setTimeout(digitarLetraPorLetra, 20); // Tempo entre cada letra
                     } else {

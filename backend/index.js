@@ -3,9 +3,11 @@ import path from "path";
 import { fileURLToPath } from "url";
 // import { messages } from './src/db/schema.js';
 import { main, geraHistorico } from "./src/langchain/langchain.js";
-import { insertMessage, getMessagesById, getAllMessages } from "./src/db/db.js";
+import { insertMessage, getMessagesById, retornaQtdChamados, insertConversa, removeConversasVazias, getDados } from "./src/db/db.js";
 import { v7 as uuidv7 } from "uuid";
 import cookieParser from "cookie-parser";
+import { data } from "./src/db/data.js";
+import { insertChamado } from "./src/db/db.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -27,7 +29,7 @@ app.get("/", (req, res) => {
 
 app.get("/chat_limpo", (req, res) => {
 	res.setHeader("Content-Type", "text/html");
-	res.cookie("sessionId", uuidv7());
+	res.cookie("sessionId", uuidv7(), { maxAge: 2 * 60 * 60 * 1000 });
 	res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
@@ -39,6 +41,11 @@ app.get("/faq", (req, res) => {
 app.get("/historico", (req, res) => {
     res.setHeader("Content-Type", "text/html");
     res.sendFile(path.join(__dirname, "public", "historico.html"));
+});
+
+app.get("/v", (req, res) => {
+    res.setHeader("Content-Type", "text/html");
+    res.sendFile(path.join(__dirname, "public", "visualizacao.html"));
 });
 
 app.get("/clickHist", (req, res) => {
@@ -58,6 +65,7 @@ app.post("/messages", async (req, res) => {
             res.json({ text: response });
             insertMessage(response, sessionId, 0, "system", Date.now());
         });
+        res.cookie("sessionId", sessionId, { maxAge: 2 * 60 * 60 * 1000 });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -65,12 +73,17 @@ app.post("/messages", async (req, res) => {
 
 app.get("/messages", async (req, res) => {
     try {
-        const sessionId = req.cookies.sessionId;
+        var sessionId = req.cookies.sessionId;
         if (!sessionId) {
-            res.cookie("sessionId", uuidv7());
+            sessionId = uuidv7();
+            res.cookie("sessionId", sessionId, { maxAge: 2 * 60 * 60 * 1000 });
         }
         const allMessages = await getMessagesById(sessionId);
         if(allMessages.length == 0){
+            removeConversasVazias();
+            sessionId = uuidv7();
+            res.cookie("sessionId", sessionId, { maxAge: 2 * 60 * 60 * 1000 });
+            insertConversa(sessionId, Date.now().toString());
             insertMessage("Olá, sou o assistente virtual da SoftTek, como posso te ajudar?", sessionId, 0, "system", Date.now());
         }
         res.json(allMessages);
@@ -79,10 +92,37 @@ app.get("/messages", async (req, res) => {
     }
 });
 
+app.get("/dados", async (req, res) => {
+    try {
+        var sessionId = req.cookies.sessionId;
+        const dados = await getDados(sessionId);
+        res.json(dados);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 app.get("/geraHistorico", async (req, res) => {
-    try {	
-		const historico = await geraHistorico();
-		res.json(historico);
+    try {
+        await removeConversasVazias();
+        const historico = await geraHistorico();
+        res.json(historico);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.get("/initialize-chamados", async (req, res) => {
+    try {
+        const chamadosCount = await retornaQtdChamados();
+        if (chamadosCount === 0) {
+            for (const chamado of data) {
+                await insertChamado(Date.now(), chamado.titulo, chamado.descricao, chamado.conclusao);
+            }
+            res.json({ message: "Chamados initialized successfully." });
+        } else {
+            res.json({ message: "Chamados already initialized." });
+        }
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

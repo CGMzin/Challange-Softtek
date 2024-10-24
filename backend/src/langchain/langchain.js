@@ -4,8 +4,8 @@ import { RunnablePassthrough, RunnableSequence } from "@langchain/core/runnables
 import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
 import { createStuffDocumentsChain } from "langchain/chains/combine_documents";
 import { MemoryVectorStore } from "langchain/vectorstores/memory";
-import { data } from "./data.js";
-import { getMessagesById, getAllMessages } from "../db/db.js";
+import { data } from "../db/data.js";
+import { getMessagesById, getAllMessages, getAllConversas } from "../db/db.js";
 import { ChatMessageHistory } from "langchain/stores/message/in_memory";
 
 const createLLM = () =>
@@ -20,6 +20,12 @@ const llmTitulos = () =>
         temperature: 0.1,
     });
 
+    const llmDados = () =>
+        new ChatOpenAI({
+            model: "gpt-4o-mini",
+            temperature: 0.7,
+        });
+
 // Create the embedding model
 const embeddings = new OpenAIEmbeddings();
 
@@ -32,26 +38,52 @@ const embeddings = new OpenAIEmbeddings();
 // </context>
 // `;
 
-const getSystemTemplate = () => `Com base nos dados fornecidos, analise a pergunta do usuário,
-defina uma possível solução e na resposta, forneça a porcentagem de confiança da solução com base nos chamados 
-anteriores, exemplo:
-"Solução: Atualização do cliente VPN e configuração do perfil. 
+const getSystemTemplate = () => `Com base nos dados fornecidos, analise a pergunta do usuário, e decida:
 
- Essa solução foi eficaz em 80% dos chamados anteriores."
+Se a pergunta for sobre um problema técnico:
+    Se o problema tiver solução (definida na base de dados):
+        Se o usuário quer uma resposta detalhada:
+            Responda com a solução detalhada.
+        Se não:
+            Responda com a solução resumida.
+    Se não:
+        Se o usuário quer que você pesquise mais informações:
+            Pesquise mais informações e forneça uma solução.
+        Se não souber se o usuário quer mais informações:
+            Pergunte se ele quer que você pesquise mais informações.
+        Se não:
+            Responda que não há solução definida.
+Se não:
+    Responda que é uma inteligência artificial criada para ajudar em problemas de suporte técnico.
 
-A porcentagem deve ser calculada com base nos chamados contidos na base de dados, e não devem ser respondidas perguntas
-que não possuem solução definida ou que não tem relação à suporte técnico.
+Todas as respostas devem ser no formato html, para serem inseridas em uma tag <p></p>.
 
-Caso sejam feitar perguntas sem conexão com suporte técnico, responda que é uma inteligencia artificial criada para ajudar
-em problemas de suporte técnico.
+Se a resposta for uma solução baseada nos dados fornecidos, calcule a taxa de acertividade da solução com base nos dados e forneça ao fim
+da resposta, exemplo : "Essa solução foi eficaz em 80% dos casos".
 
 <context>
 {context}
 </context>
 `;
 
-const templateTitulo = () => `com base nos dados fornecidos, gere um título de no máximo 8 palavras resumindo o problema,
+const templateTitulo = () => `Com base nos dados fornecidos, gere um título de no máximo 8 palavras resumindo o problema,
 não escreva ":" ou "Descrição" ou "Conclusão" ou "título" no título, apenas o título em si.
+
+<context>
+{context}
+</context>
+`;
+
+const templateDescricao = () => `Com base na conversa, gere uma descrição de 1000 caracteres descrevendo o problema,
+não escreva ":" ou "Descrição" ou "Conclusão" ou "título" na descrição, apenas a descrição em si.
+
+<context>
+{context}
+</context>
+`;
+
+const templateSolucao = () => `Com base na conversa, gere um texto de 500 caracteres descrevendo a solução do problema,
+não escreva ":" ou "Descrição" ou "Conclusão" ou "título" no texto, apenas o texto em si.
 
 <context>
 {context}
@@ -62,6 +94,8 @@ não escreva ":" ou "Descrição" ou "Conclusão" ou "título" no título, apena
 const createQuestionAnsweringPrompt = () => ChatPromptTemplate.fromMessages([["system", getSystemTemplate()], new MessagesPlaceholder("messages")]);
 
 const promptDeTitulos = () => ChatPromptTemplate.fromMessages([["system", templateTitulo()], new MessagesPlaceholder("messages")]);
+const promptDeDescricao = () => ChatPromptTemplate.fromMessages([["system", templateDescricao()], new MessagesPlaceholder("messages")]);
+const promptDeSolucao = () => ChatPromptTemplate.fromMessages([["system", templateSolucao()], new MessagesPlaceholder("messages")]);
 
 // Create document chain to respond based on previous texts ("documents") using the model
 const createDocumentChain = async (llm, prompt) =>
@@ -113,40 +147,85 @@ const main = async (inputMessage, sessionId) => {
 };
 
 const geraHistorico = async () => {
+    const conversas = await getAllConversas();
+    const historico = {};
+    conversas.forEach(conversa => {
+        historico[conversa.sessionId] = conversa.titulo;
+    });
+    return historico;
+};
+
+const geraTituloConversa = async (sessionId) => {
     const llm = llmTitulos();
     const questionAnsweringPrompt = promptDeTitulos();
     const documentChain = await createDocumentChain(llm, questionAnsweringPrompt);
     const retriever = await createVectorStore();
     const retrievalChain = createRetrievalChain(documentChain, retriever);
 
-    const messages = await getAllMessages();
-
-    let sessions = {};
-    for (const message of messages) {
-        if (sessions[message.sessionId] === undefined) {
-            sessions[message.sessionId] = [];
+    const historico = new ChatMessageHistory();
+    for (const message of await getMessagesById(sessionId)) {
+        if (message.senderType === "user") {
+            historico.addMessage(new HumanMessage(message.content));
+        } else {
+            historico.addMessage(new AIMessage(message.content));
         }
-        sessions[message.sessionId].push(message);
     }
 
-    var titulos = {};
-    for (const key in sessions) {
-        const historico = new ChatMessageHistory();
-        for (const message of sessions[key]) {
-            if (message.senderType === "user") {
-                historico.addMessage(new HumanMessage(message.content));
-            } else {
-                historico.addMessage(new AIMessage(message.content));
-            }
-        }
-        historico.addMessage(new HumanMessage("Qual seria o título dessa conversa?"));
-        const response = await retrievalChain.invoke({
-            messages: await historico.getMessages(),
-        });
-        titulos[key] = response.answer;
-    }
+    historico.addMessage(new HumanMessage("Qual seria o título dessa conversa?"));
+    const response = await retrievalChain.invoke({
+        messages: await historico.getMessages(),
+    });
 
-    return titulos;
+    return response.answer;
 };
 
-export { main, geraHistorico };
+const geraDecricaoConversa = async (sessionId) => {
+    const llm = llmDados();
+    const questionAnsweringPrompt = promptDeDescricao();
+    const documentChain = await createDocumentChain(llm, questionAnsweringPrompt);
+    const retriever = await createVectorStore();
+    const retrievalChain = createRetrievalChain(documentChain, retriever);
+
+    const historico = new ChatMessageHistory();
+    for (const message of await getMessagesById(sessionId)) {
+        if (message.senderType === "user") {
+            historico.addMessage(new HumanMessage(message.content));
+        } else {
+            historico.addMessage(new AIMessage(message.content));
+        }
+    }
+
+    historico.addMessage(new HumanMessage("Se eu criasse um chamado a partir dessa conversa, qual seria a descrição do problema? Quero a descrição sem caracteres especiais, letras maiusculas ou coisas do tipo, apenas o texto da descrição com no máximo 1000 caracteres."));
+    const response = await retrievalChain.invoke({
+        messages: await historico.getMessages(),
+    });
+
+    return response.answer;
+};
+
+const geraSolucaoConversa = async (sessionId) => {
+    const llm = llmDados();
+    const questionAnsweringPrompt = promptDeSolucao();
+    const documentChain = await createDocumentChain(llm, questionAnsweringPrompt);
+    const retriever = await createVectorStore();
+    const retrievalChain = createRetrievalChain(documentChain, retriever);
+
+    const historico = new ChatMessageHistory();
+    for (const message of await getMessagesById(sessionId)) {
+        if (message.senderType === "user") {
+            historico.addMessage(new HumanMessage(message.content));
+        } else {
+            historico.addMessage(new AIMessage(message.content));
+        }
+    }
+
+    historico.addMessage(new HumanMessage("Se eu criasse um chamado a partir dessa conversa, qual seria a solução do problema? Quero a solução sem caracteres especiais, letras maiusculas ou coisas do tipo, apenas o texto da solução com no máximo 500 caracteres."));
+
+    const response = await retrievalChain.invoke({
+        messages: await historico.getMessages(),
+    });
+
+    return response.answer;
+};
+
+export { main, geraHistorico, geraTituloConversa, geraDecricaoConversa, geraSolucaoConversa };

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Kumbh+Sans:wght@600&display=swap" rel="stylesheet">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+         :root {
+            --dark-blue: #02040f;
+            --light-blue: #65aaeb;
+            --light-green: #bee765;
+            --green: #7fba00;
+            --white: #ffffff;
+        }
+
+        /* Configuração Geral */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: white;
+            color: white;
+            margin: 0;
+            padding: 10px;
+        }
+
+        img {
+            height: 80px;
+            width: 170px;    
+        }
+        
+        #header {
+            margin-top: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        #header img {
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            top: 50%;
+            transform: translateY(-50%);
+            height: auto;
+        }
+        
+        #header h1 {
+            text-align: center;
+            font-size: 36px;
+            margin: 0;
+        }
+
+        .kanit-semibold {
+            font-family: "Kanit", sans-serif;
+            font-weight: 600;
+            font-style: normal;
+        }
+
+        input, textarea {
+            width: 93%;
+            padding: 8px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 4px;
+            background-color: var(--white);
+            color: black;
+            box-shadow: 5px 5px 5px rgba(0.1, 0.1, 0.1, 0.1);
+            resize: none;
+          }
+
+        label {
+            font-weight: bold;
+            color: white;
+            text-transform: uppercase;
+            text-shadow: 5px 5px 5px rgba(0.2, 0.2, 0.2, 0.2);
+        }
+
+        button {
+            background-color: var(--green);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: var(--light-blue);
+        }
+
+        #container {
+            margin-left: 10px;
+        }
+
+        #descricao {
+            height: 300px;
+            
+        }
+
+        #solucao {
+            height: 120px;
+        }
+
+        /* -------------- IMPRESSÃO --------------- */
+        html {
+            font-size: 12pt;
+        }
+
+        .folha {
+            padding: 5px;
+            background-color: var(--dark-blue);
+        }
+
+        .a4_vertical {
+            width: 793px;
+            height: 1122px;
+        }
+
+        .a4_horizontal {
+            width: 1122px;
+            height: 793px;
+        }
+
+        .content {
+            display: flex;
+            position: relative;
+            justify-content: center;
+        }
+
+        .page {
+            page-break-before: always;
+        }
+
+        #folha {
+            border: 1px solid rgba(0.2, 0.2, 0.2, 0.2);
+            border-radius: 5px;
+            box-shadow: 5px 5px 5px rgba(0.1, 0.1, 0.1, 0.1);
+        }
+
+    </style>
+
+    <title>Chamados</title>
+</head>
+
+<body>
+    <div id="folha" class="folha a4_vertical page">
+        
+        <div id="container"> 
+            <div id="header">
+                <span id="h1">TITULO DO RELATORIO (ALTERAR)</span>
+                <img src="img/LogoSofttek.png" alt="Logo" class="logo">
+                <br><br><br>
+            </div>
+
+            <label for="id">ID:</label>
+            <span>12345</span><br><br>
+
+            <label for="dataAbertura">Data de Abertura:</label>
+            <input type="d" id="dataAbertura" name="dataAbertura"><br><br>
+
+            <label for="titulo">Título:</label>
+            <input type="text" id="titulo" name="titulo" value="Problema de Tela Azul no Computador"><br><br>
+
+            <label for="descricao">Descrição:</label>
+            <textarea id="descricao" name="descricao">Usuário relata que o computador apresentou uma tela azul, indicando um possível erro de sistema. O problema pode estar relacionado a drivers desatualizados, arquivos de sistema corrompidos ou erros no disco rígido. O usuário busca orientação sobre como resolver a situação e evitar que a tela azul ocorra novamente.</textarea><br><br>
+
+            <label for="solucao">Solução:</label>
+            <textarea id="solucao" name="solucao">A solução para o problema de tela azul no computador envolve as seguintes etapas:\n\n1. **Atualização dos Drivers**: Acesse o Gerenciador de Dispositivos, localize os dispositivos relevantes, clique com o botão direito e escolha a opção para atualizar os drivers automaticamente.\n\n2. **Verificação de Integridade do Sistema**: Abra o Prompt de Comando como administrador e execute o comando `sfc /scannow` para verificar e corrigir arquivos de sistema corrompidos.\n\n3. **Verificação de Erros no Disco**: No Prompt de Comando, digite `chkdsk /f` e confirme que deseja verificar o disco na próxima reinicialização. Reinicie o computador para que a verificação ocorra.\n\n4. **Desinstalar Programas Recém-Instalados**: Se a tela azul começou após a instalação de um novo software, desinstale-o através do Painel de Controle.\n\nEssas etapas devem ajudar a resolver o problema da tela azul, que foi eficaz em 85% dos casos.</textarea><br><br>
+
+            <label for="dataFechamento">Data de Fechamento:</label>
+            <input type="text" id="dataFechamento" name="dataFechamento"><br><br>
+        </div>
+    </div>
+    <button>IMPRIMIR</button>
+</body>
+
+</html>

@@ -1,12 +1,25 @@
-import { text, integer, sqliteTable } from "drizzle-orm/sqlite-core";
+import { sqliteTable, text, integer, primaryKey } from "drizzle-orm/sqlite-core";
 
-const messages = sqliteTable('messages', {
-  id: integer('id').primaryKey(),
-  content: text('content').notNull(),
-  sessionId: integer('sessionId').notNull(),
-  senderId: integer('senderId').notNull(),
-  senderType: text('senderType').notNull(), // 'user' or 'system'
-  createdAt: integer('createdAt').notNull(),
+export const conversas = sqliteTable("conversas", {
+    sessionId: text("sessionId").primaryKey(),
+    titulo: text("titulo").notNull(),
+    dataInicio: text("dataInicio").notNull(),
 });
 
-export { messages };
+export const messages = sqliteTable("messages", {
+    id: integer("id").primaryKey(),
+    content: text("content").notNull(),
+    senderId: text("senderId").notNull(),
+    senderType: text("senderType").notNull(),
+    createdAt: text("createdAt").notNull(),
+    idConversa: integer("idConversa").references(() => conversas.sessionId),
+});
+
+export const chamados = sqliteTable("chamados", {
+    id: integer("id").primaryKey(),
+    dataAbertura: text("dataAbertura").notNull(),
+    titulo: text("titulo").notNull(),
+    descricao: text("descricao").notNull(),
+    logs: text("logs"), //SOLUÇÃO
+    dataFechamento: text("dataFechamento"),
+});
