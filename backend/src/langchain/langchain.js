@@ -20,11 +20,11 @@ const llmTitulos = () =>
         temperature: 0.1,
     });
 
-    const llmDados = () =>
-        new ChatOpenAI({
-            model: "gpt-4o-mini",
-            temperature: 0.7,
-        });
+const llmDados = () =>
+    new ChatOpenAI({
+        model: "gpt-4o-mini",
+        temperature: 0.5,
+    });
 
 // Create the embedding model
 const embeddings = new OpenAIEmbeddings();
@@ -149,7 +149,7 @@ const main = async (inputMessage, sessionId) => {
 const geraHistorico = async () => {
     const conversas = await getAllConversas();
     const historico = {};
-    conversas.forEach(conversa => {
+    conversas.forEach((conversa) => {
         historico[conversa.sessionId] = conversa.titulo;
     });
     return historico;
