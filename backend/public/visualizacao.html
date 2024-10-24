@@ -33,24 +33,20 @@
         #header {
             margin-top: 5px;
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
-            position: relative;
-        }
-
-        #header img {
-            position: absolute;
-            display: flex;
-            justify-content: center;
-            top: 50%;
-            transform: translateY(-50%);
-            height: auto;
+            padding: 10px;
+            border-bottom: 2px solid #ccc;
         }
         
-        #header h1 {
+        #h1 {
             text-align: center;
             font-size: 36px;
             margin: 0;
+            flex: 1;
+            font-weight: bold;
+            color: #ffffff;
+
         }
 
         .kanit-semibold {
@@ -112,7 +108,7 @@
 
         .folha {
             padding: 5px;
-            background-color: var(--dark-blue);
+            background-color: #c3aeea;
         }
 
         .a4_vertical {
@@ -151,12 +147,12 @@
         
         <div id="container"> 
             <div id="header">
-                <span id="h1">TITULO DO RELATORIO (ALTERAR)</span>
+                <span id="h1">TITULO DO RELATORIO</span>
                 <img src="img/LogoSofttek.png" alt="Logo" class="logo">
                 <br><br><br>
             </div>
 
-            <label for="id">ID:</label>
+            <label for="id" id="id">ID:</label>
             <span>12345</span><br><br>
 
             <label for="dataAbertura">Data de Abertura:</label>
