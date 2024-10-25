@@ -3,7 +3,8 @@ import Database from "better-sqlite3";
 import { messages, chamados } from "./schema.js";
 import { eq, countDistinct } from "drizzle-orm";
 import { conversas } from "./schema.js";
-import { geraTituloConversa, geraDecricaoConversa, geraSolucaoConversa } from "../langchain/langchain.js";
+import { geraTituloConversa, geraDecricaoConversa, geraSolucaoConversa, geraPrioridadeConversa, geraStatusConversa } from "../langchain/langchain.js";
+import { data } from "./data.js";
 
 const sqlite = new Database("./database.db");
 const db = drizzle(sqlite);
@@ -46,6 +47,10 @@ const removeConversasVazias = async () => {
         await db.delete(messages).where(eq(messages.idConversa, conversa.sessionId)).run();
         await db.delete(conversas).where(eq(conversas.sessionId, conversa.sessionId)).run();
     }
+};
+
+const getConversaById = async (sessionId) => {
+    return await db.select(conversas).from(conversas).where(eq(conversas.sessionId, sessionId)).get();
 };
 
 const getAllConversas = async () => {
@@ -94,11 +99,20 @@ const getDados = async (sessionId) => {
     const titulo = await geraTituloConversa(sessionId);
     const descricao = await geraDecricaoConversa(sessionId);
     const solucao = await geraSolucaoConversa(sessionId);
+    const status = await geraStatusConversa(sessionId);
+    const prioridade = await geraPrioridadeConversa(sessionId);
+    const idConversa = await retornaQtdChamados() + 1;
+    const conversa = await getConversaById(sessionId);
+    const dataInicio = conversa.dataInicio;
 
     return {
         titulo,
         descricao,
-        solucao
+        solucao, 
+        status, 
+        prioridade,
+        idConversa,
+        dataInicio,
     };
 };
 

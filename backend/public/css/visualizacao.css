@@ -1,0 +1,214 @@
+:root {
+    --dark-blue: #02040f;
+    --light-blue: #65aaeb;
+    --light-green: #bee765;
+    --green: #7fba00;
+    --white: #ffffff;
+}
+
+/* Configuração Geral */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #c1f3ff;
+    color: white;
+    margin: 0;
+}
+
+img {
+    height: 80px;
+    width: 170px;
+}
+
+hr {
+    border-color: #02040f;
+    margin-bottom: 3rem;
+}
+
+select {
+    color: white;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    background-color: transparent;
+    border-bottom: 1px solid white;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    /* Adiciona a seta no lado direito */
+    background-image: url('data:image/svg+xml;utf8,<svg fill="white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M7 10l5 5 5-5H7z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
+    padding-right: 30px;
+    /* Adiciona espaço à direita para a seta */
+}
+
+select:focus {
+    /* Muda a seta ao clicar (seta para cima) */
+    background-image: url('data:image/svg+xml;utf8,<svg fill="white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M7 14l5-5 5 5H7z"/></svg>');
+}
+
+select:not(:focus) {
+    /* Volta a seta ao estado original quando o select perde o foco */
+    background-image: url('data:image/svg+xml;utf8,<svg fill="white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M7 10l5 5 5-5H7z"/></svg>');
+}
+
+select option {
+    background-color: var(--dark-blue);
+    color: white;
+}
+
+
+#header,
+#logo,
+#section {
+    margin-top: 5px;
+    margin-right: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+#header {
+    display: flex;
+    justify-content: space-between;
+    margin: 1.5rem 0;
+}
+
+.infos {
+    display: flex;
+    width: 90%;
+    justify-content: space-between;
+}
+
+.infos div {
+    display: flex;
+    flex-direction: column;
+}
+
+#logo img {
+    position: relative;
+    margin: auto;
+    height: auto;
+}
+
+#header h1 {
+    text-align: center;
+    font-size: 36px;
+    margin: 0;
+}
+
+.kanit-semibold {
+    font-family: "Kanit", sans-serif;
+    font-weight: 600;
+    font-style: normal;
+}
+
+input,
+textarea {
+    width: 98%;
+    padding: 8px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 4px;
+    background-color: var(--white);
+    color: black;
+    box-shadow: 1px 1px 10px 0px #dadada;
+    resize: none;
+}
+
+label {
+    font-weight: bold;
+    color: white;
+    text-transform: uppercase;
+    text-shadow: 5px 5px 5px rgba(0.2, 0.2, 0.2, 0.2);
+}
+
+button {
+    background-color: var(--green);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: var(--light-blue);
+}
+
+button:disabled {
+    background-color: gray;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+#container {
+    margin-left: 0;
+    padding: 0 1.8rem;
+}
+
+#descricao {
+    height: 250px;
+}
+
+#solucao {
+    height: 250px;
+}
+
+.char-counter {
+    font-size: 12px;
+    color: lightgray;
+    text-align: right;
+    margin-top: -10px;
+    margin-bottom: 5px;
+}
+
+/* -------------- IMPRESSÃO --------------- */
+html {
+    font-size: 12pt;
+}
+
+.folha {
+    padding: 0;
+    margin: auto;
+    background-color: var(--dark-blue);
+}
+
+.a4_vertical {
+    width: 793px;
+    height: 1122px;
+}
+
+.a4_horizontal {
+    width: 1122px;
+    height: 793px;
+}
+
+.content {
+    display: flex;
+    position: relative;
+    justify-content: center;
+}
+
+.page {
+    page-break-before: always;
+}
+
+#folha {
+    border: 1px solid rgba(0.2, 0.2, 0.2, 0.2);
+    border-radius: 5px;
+    box-shadow: 5px 5px 5px rgba(0.1, 0.1, 0.1, 0.1);
+}
+
+.hide {
+    display: none;
+}
+
+#btnBottom{
+    display: flex;
+    justify-content: space-around;
+}

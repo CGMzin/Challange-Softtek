@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "829d6a51-cb01-49b3-8e58-1b6b645cd005",
+  "id": "c8968de7-5a54-4f04-9f99-579be681d548",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "chamados": {
@@ -48,10 +48,31 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
+        },
+        "idConversa": {
+          "name": "idConversa",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "chamados_idConversa_conversas_sessionId_fk": {
+          "name": "chamados_idConversa_conversas_sessionId_fk",
+          "tableFrom": "chamados",
+          "tableTo": "conversas",
+          "columnsFrom": [
+            "idConversa"
+          ],
+          "columnsTo": [
+            "sessionId"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },

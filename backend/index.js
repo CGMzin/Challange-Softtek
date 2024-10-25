@@ -43,9 +43,22 @@ app.get("/historico", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "historico.html"));
 });
 
-app.get("/v", (req, res) => {
-    res.setHeader("Content-Type", "text/html");
-    res.sendFile(path.join(__dirname, "public", "visualizacao.html"));
+app.get("/v", async (req, res) => {
+    try{
+        const sessionId = req.cookies.sessionId;	
+        removeConversasVazias();
+        const messages = await getMessagesById(sessionId);
+        res.setHeader("Content-Type", "text/html");
+        if (messages.length == 0) {
+            res.sendFile(path.join(__dirname, "public", "index.html"));
+        }
+        else{
+            res.sendFile(path.join(__dirname, "public", "visualizacao.html"));
+        }
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+    
 });
 
 app.get("/clickHist", (req, res) => {

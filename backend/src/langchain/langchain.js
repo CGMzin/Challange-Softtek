@@ -29,14 +29,6 @@ const llmDados = () =>
 // Create the embedding model
 const embeddings = new OpenAIEmbeddings();
 
-// Create the standard response template
-// const getSystemTemplate = () => `Responda às perguntas do usuário com base no contexto abaixo.
-// Se o contexto não contiver informações relevantes para a pergunta, não invente nada e apenas diga "Eu não sei":
-
-// <context>
-// {context}
-// </context>
-// `;
 
 const getSystemTemplate = () => `Com base nos dados fornecidos, analise a pergunta do usuário, e decida:
 
@@ -74,7 +66,7 @@ não escreva ":" ou "Descrição" ou "Conclusão" ou "título" no título, apena
 </context>
 `;
 
-const templateDescricao = () => `Com base na conversa, gere uma descrição de 1000 caracteres descrevendo o problema,
+const templateDescricao = () => `Com base na conversa, gere uma descrição de até 1000 caracteres descrevendo o problema,
 não escreva ":" ou "Descrição" ou "Conclusão" ou "título" na descrição, apenas a descrição em si.
 
 <context>
@@ -82,8 +74,24 @@ não escreva ":" ou "Descrição" ou "Conclusão" ou "título" na descrição, a
 </context>
 `;
 
-const templateSolucao = () => `Com base na conversa, gere um texto de 500 caracteres descrevendo a solução do problema,
+const templateSolucao = () => `Com base na conversa, gere um texto de até 1000 caracteres descrevendo a solução do problema,
 não escreva ":" ou "Descrição" ou "Conclusão" ou "título" no texto, apenas o texto em si.
+
+<context>
+{context}
+</context>
+`;
+
+const templatePrioridade = () => `Com base na conversa, defina a prioridade do chamado, sendo 2 para baixa, 1 para média e 0 para alta,
+não escreva texto, só o número da prioridade.
+
+<context>
+{context}
+</context>
+`;
+
+const templateStatus = () => `Com base na conversa, defina o status do chamado, sendo 2 para fechado, 1 para em andamento e 0 para aberto,
+não escreva texto, só o número do status.
 
 <context>
 {context}
@@ -96,6 +104,8 @@ const createQuestionAnsweringPrompt = () => ChatPromptTemplate.fromMessages([["s
 const promptDeTitulos = () => ChatPromptTemplate.fromMessages([["system", templateTitulo()], new MessagesPlaceholder("messages")]);
 const promptDeDescricao = () => ChatPromptTemplate.fromMessages([["system", templateDescricao()], new MessagesPlaceholder("messages")]);
 const promptDeSolucao = () => ChatPromptTemplate.fromMessages([["system", templateSolucao()], new MessagesPlaceholder("messages")]);
+const promptDePrioridade = () => ChatPromptTemplate.fromMessages([["system", templatePrioridade()], new MessagesPlaceholder("messages")]);
+const promptDeStatus = () => ChatPromptTemplate.fromMessages([["system", templateStatus()], new MessagesPlaceholder("messages")]);
 
 // Create document chain to respond based on previous texts ("documents") using the model
 const createDocumentChain = async (llm, prompt) =>
@@ -195,7 +205,7 @@ const geraDecricaoConversa = async (sessionId) => {
         }
     }
 
-    historico.addMessage(new HumanMessage("Se eu criasse um chamado a partir dessa conversa, qual seria a descrição do problema? Quero a descrição sem caracteres especiais, letras maiusculas ou coisas do tipo, apenas o texto da descrição com no máximo 1000 caracteres."));
+    historico.addMessage(new HumanMessage("Se eu criasse um chamado a partir dessa conversa, qual seria a descrição do problema? Quero a descrição sem caracteres especiais ou coisas do tipo, apenas o texto da descrição com no máximo 1000 caracteres."));
     const response = await retrievalChain.invoke({
         messages: await historico.getMessages(),
     });
@@ -219,7 +229,7 @@ const geraSolucaoConversa = async (sessionId) => {
         }
     }
 
-    historico.addMessage(new HumanMessage("Se eu criasse um chamado a partir dessa conversa, qual seria a solução do problema? Quero a solução sem caracteres especiais, letras maiusculas ou coisas do tipo, apenas o texto da solução com no máximo 500 caracteres."));
+    historico.addMessage(new HumanMessage("Se eu criasse um chamado a partir dessa conversa, qual seria a solução do problema? Quero a solução sem caracteres especiais ou coisas do tipo, apenas o texto da solução com no máximo 500 caracteres."));
 
     const response = await retrievalChain.invoke({
         messages: await historico.getMessages(),
@@ -228,4 +238,54 @@ const geraSolucaoConversa = async (sessionId) => {
     return response.answer;
 };
 
-export { main, geraHistorico, geraTituloConversa, geraDecricaoConversa, geraSolucaoConversa };
+const geraStatusConversa = async (sessionId) => {
+    const llm = llmDados();
+    const questionAnsweringPrompt = promptDeStatus();
+    const documentChain = await createDocumentChain(llm, questionAnsweringPrompt);
+    const retriever = await createVectorStore();
+    const retrievalChain = createRetrievalChain(documentChain, retriever);
+
+    const historico = new ChatMessageHistory();
+    for (const message of await getMessagesById(sessionId)) {
+        if (message.senderType === "user") {
+            historico.addMessage(new HumanMessage(message.content));
+        } else {
+            historico.addMessage(new AIMessage(message.content));
+        }
+    }
+
+    historico.addMessage(new HumanMessage("Se eu criasse um chamado a partir dessa conversa, qual seria o status do chamado?"));
+
+    const response = await retrievalChain.invoke({
+        messages: await historico.getMessages(),
+    });
+
+    return response.answer;
+};
+
+const geraPrioridadeConversa = async (sessionId) => {
+    const llm = llmDados();
+    const questionAnsweringPrompt = promptDePrioridade();
+    const documentChain = await createDocumentChain(llm, questionAnsweringPrompt);
+    const retriever = await createVectorStore();
+    const retrievalChain = createRetrievalChain(documentChain, retriever);
+
+    const historico = new ChatMessageHistory();
+    for (const message of await getMessagesById(sessionId)) {
+        if (message.senderType === "user") {
+            historico.addMessage(new HumanMessage(message.content));
+        } else {
+            historico.addMessage(new AIMessage(message.content));
+        }
+    }
+
+    historico.addMessage(new HumanMessage("Se eu criasse um chamado a partir dessa conversa, qual seria a prioridade do chamado?"));
+
+    const response = await retrievalChain.invoke({
+        messages: await historico.getMessages(),
+    });
+
+    return response.answer;
+};
+
+export { main, geraHistorico, geraTituloConversa, geraDecricaoConversa, geraSolucaoConversa, geraPrioridadeConversa, geraStatusConversa };

@@ -4,7 +4,9 @@ CREATE TABLE `chamados` (
 	`titulo` text NOT NULL,
 	`descricao` text NOT NULL,
 	`logs` text,
-	`dataFechamento` text
+	`dataFechamento` text,
+	`idConversa` integer,
+	FOREIGN KEY (`idConversa`) REFERENCES `conversas`(`sessionId`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
 CREATE TABLE `conversas` (

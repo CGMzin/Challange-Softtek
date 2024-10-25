@@ -22,4 +22,5 @@ export const chamados = sqliteTable("chamados", {
     descricao: text("descricao").notNull(),
     logs: text("logs"), //SOLUÇÃO
     dataFechamento: text("dataFechamento"),
+    idConversa: integer("idConversa").references(() => conversas.sessionId),
 });
