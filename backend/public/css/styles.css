@@ -5,6 +5,10 @@ html, body {
     background-color: #f4f4f4;
 }
 
+#btnChamado{
+    cursor: pointer;
+}
+
 .container {
     display: flex;
     height: 100vh;

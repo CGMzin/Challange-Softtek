@@ -126,24 +126,26 @@ label {
     text-shadow: 5px 5px 5px rgba(0.2, 0.2, 0.2, 0.2);
 }
 
-button {
+button, #btnVolta {
     background-color: var(--green);
     color: white;
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    text-decoration: none;
     font-size: 16px;
 }
 
-button:hover {
+button:hover, #btnVolta:hover {
     background-color: var(--light-blue);
 }
 
-button:disabled {
-    background-color: gray;
-    cursor: not-allowed;
-    opacity: 0.6;
+button:disabled, .off {
+    background-color: gray !important;
+    cursor: not-allowed !important;
+    opacity: 0.6 !important;
+    pointer-events: none;
 }
 
 #container {

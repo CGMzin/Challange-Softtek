@@ -205,7 +205,7 @@ const geraDecricaoConversa = async (sessionId) => {
         }
     }
 
-    historico.addMessage(new HumanMessage("Se eu criasse um chamado a partir dessa conversa, qual seria a descrição do problema? Quero a descrição sem caracteres especiais ou coisas do tipo, apenas o texto da descrição com no máximo 1000 caracteres."));
+    historico.addMessage(new HumanMessage("Se eu criasse um chamado a partir dessa conversa, qual seria a descrição do problema? Quero a descrição sem caracteres especiais ou coisas do tipo, apenas o texto da descrição com no máximo 1000 caracteres. A descrição não deve conter informações sobre a solução."));
     const response = await retrievalChain.invoke({
         messages: await historico.getMessages(),
     });

@@ -5,6 +5,8 @@ CREATE TABLE `chamados` (
 	`descricao` text NOT NULL,
 	`logs` text,
 	`dataFechamento` text,
+	`status` integer NOT NULL,
+	`prioridade` integer NOT NULL,
 	`idConversa` integer,
 	FOREIGN KEY (`idConversa`) REFERENCES `conversas`(`sessionId`) ON UPDATE no action ON DELETE no action
 );

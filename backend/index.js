@@ -3,7 +3,8 @@ import path from "path";
 import { fileURLToPath } from "url";
 // import { messages } from './src/db/schema.js';
 import { main, geraHistorico } from "./src/langchain/langchain.js";
-import { insertMessage, getMessagesById, retornaQtdChamados, insertConversa, removeConversasVazias, getDados } from "./src/db/db.js";
+import { insertMessage, getMessagesById, retornaQtdChamados, insertConversa, removeConversasVazias, getDados,
+    getChamadoByIdConversa, salvaChamado } from "./src/db/db.js";
 import { v7 as uuidv7 } from "uuid";
 import cookieParser from "cookie-parser";
 import { data } from "./src/db/data.js";
@@ -43,17 +44,16 @@ app.get("/historico", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "historico.html"));
 });
 
-app.get("/v", async (req, res) => {
+app.get("/pdf", async (req, res) => {
     try{
         const sessionId = req.cookies.sessionId;	
         removeConversasVazias();
         const messages = await getMessagesById(sessionId);
-        res.setHeader("Content-Type", "text/html");
-        if (messages.length == 0) {
-            res.sendFile(path.join(__dirname, "public", "index.html"));
-        }
-        else{
-            res.sendFile(path.join(__dirname, "public", "visualizacao.html"));
+        res.setHeader("Content-Type", "application/json");
+        if (messages.length === 0) {
+            res.json({ redirect: "index.html", r: "000" });
+        } else {
+            res.json({ redirect: "visualizacao.html" });
         }
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -100,6 +100,30 @@ app.get("/messages", async (req, res) => {
             insertMessage("Olá, sou o assistente virtual da SoftTek, como posso te ajudar?", sessionId, 0, "system", Date.now());
         }
         res.json(allMessages);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.get("/verificaChamado", async (req, res) => {
+    try {
+        var sessionId = req.cookies.sessionId;
+        if (!sessionId) {
+            sessionId = uuidv7();
+        }
+        const chamado = await getChamadoByIdConversa(sessionId);
+        res.json(chamado);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.post("/salvaChamado", async (req, res) => {
+    try {
+        const sessionId = req.cookies.sessionId;
+        const { dataAbertura, titulo, descricao, solucao, dataFechamento, status, prioridade } = req.body;
+        await salvaChamado(dataAbertura, titulo, descricao, solucao, dataFechamento, sessionId, status, prioridade);
+        res.status(200).json({ message: "Chamado salvo com sucesso." });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "c8968de7-5a54-4f04-9f99-579be681d548",
+  "id": "ab7b28b5-5a96-4e28-9dda-ec232dc4516f",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "chamados": {
@@ -47,6 +47,20 @@
           "type": "text",
           "primaryKey": false,
           "notNull": false,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "prioridade": {
+          "name": "prioridade",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
           "autoincrement": false
         },
         "idConversa": {

@@ -1,3 +1,4 @@
+import { int } from "drizzle-orm/mysql-core";
 import { sqliteTable, text, integer, primaryKey } from "drizzle-orm/sqlite-core";
 
 export const conversas = sqliteTable("conversas", {
@@ -22,5 +23,7 @@ export const chamados = sqliteTable("chamados", {
     descricao: text("descricao").notNull(),
     logs: text("logs"), //SOLUÇÃO
     dataFechamento: text("dataFechamento"),
+    status: integer("status").notNull(),
+    prioridade: integer("prioridade").notNull(),
     idConversa: integer("idConversa").references(() => conversas.sessionId),
 });

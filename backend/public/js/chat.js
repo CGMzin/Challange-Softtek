@@ -114,4 +114,17 @@ $(document).ready(function () {
     }).catch(err => {
         console.error(err);
     });
+
+    document.getElementById("btnChamado").addEventListener("click", () => {
+        fetch('/pdf')
+        .then(response => response.json())
+        .then(data => {
+            if (data.redirect === "index.html" && data.r === "000") {
+                alert("Inicie uma conversa antes de abrir um chamado.");
+            } else {
+                window.location.href = data.redirect;
+            }
+        })
+        .catch(error => console.error("Erro ao buscar o PDF:", error));
+    });
 });

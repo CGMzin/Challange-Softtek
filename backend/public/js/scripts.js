@@ -36,5 +36,20 @@ $(document).ready(function () {
             });
         }
     });
+
+    const response = fetch('/verificaChamado', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    const data = response.then(res => res.json()).then(data => {
+        if(data.length > 0){
+            document.getElementById("imgChamado").src = "img/editar.png";
+            document.getElementById("spanChamado").innerHTML = "Editar Chamado";
+        }
+    }).catch(err => {
+        console.error(err);
+    });
 });
 

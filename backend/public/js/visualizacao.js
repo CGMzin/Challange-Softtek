@@ -10,7 +10,7 @@ inputs.forEach((input) => {
     });
 });
 
-const button = document.querySelector("button");
+const button = document.querySelector("#btnImprimir");
 button.addEventListener("click", () => {
     button.classList.add("hide");
     spans = document.querySelectorAll(".char-counter");
@@ -32,6 +32,8 @@ button.addEventListener("click", () => {
         button.classList.add("hide");
     });
 
+    document.querySelector("#btnVolta").classList.add("hide");
+
     window.print();
 
     spanInfos.forEach((span) => {
@@ -50,6 +52,46 @@ button.addEventListener("click", () => {
     document.querySelectorAll("button").forEach((button) => {
         button.classList.remove("hide");
     });
+
+    document.querySelector("#btnVolta").classList.remove("hide");
+});
+
+const btn2 = document.querySelector("#btnSalvar");
+btn2.addEventListener("click", () => {
+    const dataFechamento = document.getElementById("dataFechamento").textContent;
+    const dataAbertura = document.getElementById("dataAbertura").textContent;
+    const titulo = document.getElementById("titulo").value;
+    const prioridade = document.getElementById("selPrio").selectedIndex;
+    const status = document.getElementById("selStatus").selectedIndex;
+    const descricao = document.getElementById("descricao").value;
+    const solucao = document.getElementById("solucao").value;
+
+    const data = {
+        dataFechamento,
+        dataAbertura,
+        titulo,
+        descricao,
+        solucao,
+        prioridade,
+        status
+    };
+
+    fetch('/salvaChamado', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    }).then(res => {
+        if (res.status == 200) {
+            alert("Chamado atualizado com sucesso!");
+            window.location.href = "/";
+        } else {
+            alert("Erro ao atualizar chamado!");
+        }
+    }).catch(err => {
+        console.error(err);
+    });
 });
 
 var selectElement = document.querySelectorAll("select");
@@ -61,8 +103,26 @@ selectElement.forEach((select) => {
     });
 });
 
-$(document).ready(function () {
+$(document).ready(function () {    
     var loadingElements = document.querySelectorAll(".carregando");
+
+    loadingElements.forEach((element) => {
+        let dots = 0;
+        const intervalId = setInterval(() => {
+            dots = (dots + 1) % 4;
+            if (element.tagName === "SPAN") {
+                element.textContent = "carregando" + ".".repeat(dots);
+            } else {
+                element.value = "carregando" + ".".repeat(dots);
+            }
+        }, 500);
+    
+        intervalIds.push(intervalId); // Salva o ID do intervalo
+    });
+
+    function stopLoading() {
+        intervalIds.forEach((id) => clearInterval(id)); // Para cada intervalo, ele é limpo
+    };
 
     const response = fetch('/dados', {
         method: 'GET',
@@ -75,7 +135,7 @@ $(document).ready(function () {
             window.location.href = "/";
         }
         
-        document.getElementById("numChamado").textContent = data.idConversa.toString().padStart(5, '0');
+        document.getElementById("numChamado").textContent = data.id.toString().padStart(5, '0');
         const dataAbertura = new Date(parseInt(data.dataInicio));
         const formattedDataAbertura = dataAbertura.toLocaleDateString('pt-BR', {
             day: '2-digit',
@@ -92,7 +152,7 @@ $(document).ready(function () {
 
         stopLoading();
 
-        document.getElementById("dataFechamento").textContent = formattedDate;
+        document.getElementById("dataFechamento").textContent = data.dataFechamento ? data.dataFechamento : formattedDate;
         document.getElementById("titulo").value = data.titulo;
         document.getElementById("descricao").value = data.descricao;
         document.getElementById("solucao").value = data.solucao;
@@ -111,26 +171,11 @@ $(document).ready(function () {
             button.disabled = false;
         });
 
+        document.querySelector("#btnVolta").classList.remove("off");
+        document.querySelector("#btnVolta").href = "/";
+
     }).catch(err => {
         console.error(err);
     });
 
-    
-    loadingElements.forEach((element) => {
-        let dots = 0;
-        const intervalId = setInterval(() => {
-            dots = (dots + 1) % 4;
-            if (element.tagName === "SPAN") {
-                element.textContent = "carregando" + ".".repeat(dots);
-            } else {
-                element.value = "carregando" + ".".repeat(dots);
-            }
-        }, 500);
-    
-        intervalIds.push(intervalId); // Salva o ID do intervalo
-    });
-
-    function stopLoading() {
-        intervalIds.forEach((id) => clearInterval(id)); // Para cada intervalo, ele é limpo
-    }
 });
